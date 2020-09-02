@@ -1,0 +1,24 @@
+1 ICON "../dist/assets/icon.ico"
+1 VERSIONINFO
+FILEVERSION     1,0,0,0
+PRODUCTVERSION  1,0,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904E4"
+    BEGIN
+      VALUE "CompanyName", "Fredy Rogez"
+      VALUE "FileDescription", "Démineur Classic"
+      VALUE "FileVersion", "1.0.0"
+      VALUE "InternalName", "demineur_classic"
+      VALUE "LegalCopyright", "Fredy Rogez"
+      VALUE "OriginalFilename", "Demineur.exe"
+      VALUE "ProductName", "Démineur Classic"
+      VALUE "ProductVersion", "1.0.0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x040C, 1252
+  END
+END
