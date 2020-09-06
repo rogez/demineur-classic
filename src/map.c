@@ -9,6 +9,8 @@
 #include "common.h"
 #include "map.h"
 
+static inline void draw_cell(int x, int y);
+
 extern Game game;
 
 // MAP
@@ -17,17 +19,17 @@ int get_random(int v_min, int v_max)
     return rand() % (v_max - v_min + 1) + v_min;
 }
 
-inline Uint8 get_cell(int x, int y)
+Uint8 get_cell(int x, int y)
 {
     return game.cell_map.field[y * game.cell_map.width + x];
 }
 
-inline void set_cell(int x, int y, Uint8 value)
+void set_cell(int x, int y, Uint8 value)
 {
     game.cell_map.field[y * game.cell_map.width + x] = value;
 }
 
-inline Uint8 get_cpt_mines(int x, int y)
+Uint8 get_cpt_mines(int x, int y)
 {
     Uint8 cell = get_cell(x, y);
     cell >>= 4;
@@ -35,7 +37,7 @@ inline Uint8 get_cpt_mines(int x, int y)
     return (Uint8)cell;
 }
 
-inline void set_cpt_mines(int x, int y, Uint8 cpt)
+void set_cpt_mines(int x, int y, Uint8 cpt)
 {
     Uint8 cell = get_cell(x, y);
     cell &= 0xFF0F;
@@ -44,13 +46,13 @@ inline void set_cpt_mines(int x, int y, Uint8 cpt)
     set_cell(x, y, cell);
 }
 
-inline void inc_cpt_mines(int x, int y)
+void inc_cpt_mines(int x, int y)
 {
     Uint8 cell_cpt = get_cpt_mines(x, y);
     set_cpt_mines(x, y, ++cell_cpt);
 }
 
-inline void update_cpt_mines(int x, int y)
+void update_cpt_mines(int x, int y)
 {
     int ty = game.cell_map.height - 1;
     int tx = game.cell_map.width - 1;
@@ -73,63 +75,63 @@ inline void update_cpt_mines(int x, int y)
         inc_cpt_mines(x - 1, y);
 }
 
-inline void set_mine(int x, int y)
+void set_mine(int x, int y)
 {
     Uint8 cell = get_cell(x, y) | 1;
     set_cell(x, y, cell);
 }
 
-inline bool is_cell_mine(int x, int y)
+bool is_cell_mine(int x, int y)
 {
     return ((get_cell(x, y) & 1) == 1) ? true : false;
 }
 
-inline void set_boom(int x, int y)
+void set_boom(int x, int y)
 {
     Uint8 cell = get_cell(x, y) | 8;
     set_cell(x, y, cell);
 }
 
-inline bool is_cell_boom(int x, int y)
+bool is_cell_boom(int x, int y)
 {
     return ((get_cell(x, y) & 8) == 8) ? true : false;
 }
 
-inline void set_flag(int x, int y)
+void set_flag(int x, int y)
 {
     Uint8 cell = get_cell(x, y) | 2;
     set_cell(x, y, cell);
 }
 
-inline void unset_flag(int x, int y)
+void unset_flag(int x, int y)
 {
     Uint8 cell = get_cell(x, y) & 0xFFFD;
     set_cell(x, y, cell);
 }
 
-inline bool is_cell_flag(int x, int y)
+bool is_cell_flag(int x, int y)
 {
     return ((get_cell(x, y) & 2) == 2) ? true : false;
 }
 
-inline void set_hidden(int x, int y)
+void set_hidden(int x, int y)
 {
     Uint8 cell = get_cell(x, y) | 4;
     set_cell(x, y, cell);
 }
 
-inline void unset_hidden(int x, int y)
+void unset_hidden(int x, int y)
 {
     Uint8 cell = get_cell(x, y) & 0xFFFB;
     set_cell(x, y, cell);
 }
 
-inline bool is_cell_hidden(int x, int y)
+bool is_cell_hidden(int x, int y)
 {
     return ((get_cell(x, y) & 4) == 4) ? true : false;
 }
 
-inline void set_all_hidden()
+void set_all_hidden()
 {
     for (int line = 0; line < game.cell_map.height; line++)
     {
@@ -140,7 +142,7 @@ inline void set_all_hidden()
     }
 }
 
-inline void unset_all_hidden()
+void unset_all_hidden()
 {
     for (int line = 0; line < game.cell_map.height; line++)
     {
@@ -151,7 +153,7 @@ inline void unset_all_hidden()
     }
 }
 
-inline void update_zero_cell(int x, int y)
+void update_zero_cell(int x, int y)
 {
     if (get_cpt_mines(x, y) != 0)
     {
@@ -188,7 +190,7 @@ inline void update_zero_cell(int x, int y)
     }
 }
 
-void init_map(Game_level level)
+void init_map(GameLevel level)
 {
 
     switch (level)
@@ -262,7 +264,26 @@ void print_map()
     }
 }
 
-inline void draw_cell(int x, int y)
+void draw_map()
+{
+    game.rest_nb_mines = game.cell_map.nb_mines;
+    game.rest_nb_cells = game.cell_map.width * game.cell_map.height;
+
+    for (int line = 0; line < game.cell_map.height; line++)
+    {
+        for (int row = 0; row < game.cell_map.width; row++)
+        {
+            draw_cell(row, line);
+        }
+    }
+    if (game.state == GAME_WIN)
+    {
+        game.rest_nb_mines = 0;
+    }
+}
+
+//PRIVATE
+static inline void draw_cell(int x, int y)
 {
     SDL_Rect r;
     r.x = x * 32 + MAP_MARGIN_X;
@@ -370,22 +391,3 @@ inline void draw_cell(int x, int y)
         }
     }
 }
-
-inline void draw_map()
-{
-    game.rest_nb_mines = game.cell_map.nb_mines;
-    game.rest_nb_cells = game.cell_map.width * game.cell_map.height;
-
-    for (int line = 0; line < game.cell_map.height; line++)
-    {
-        for (int row = 0; row < game.cell_map.width; row++)
-        {
-            draw_cell(row, line);
-        }
-    }
-    if (game.state == GAME_WIN)
-    {
-        game.rest_nb_mines = 0;
-    }
-}
-

@@ -6,8 +6,7 @@
 // This file is subject to the terms and conditions defined in
 // file "LICENSE", which is part of this source code package.
 
-#ifndef __GAME_H__
-#define __GAME_H__
+#pragma once
 
 #include "common.h"
 
@@ -16,5 +15,3 @@ void game_init();
 void game_clean();
 void game_events();
 void game_restart();
-
-#endif

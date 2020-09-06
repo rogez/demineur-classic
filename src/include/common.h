@@ -6,8 +6,7 @@
 // This file is subject to the terms and conditions defined in
 // file "LICENSE", which is part of this source code package.
 
-#ifndef __COMMON_H__
-#define __COMMON_H__
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -89,7 +88,7 @@
 #define min(a,b) ((a)<=(b)?a:b)
 
 // STRUCTS
-typedef struct Mouse_state
+typedef struct MouseState
 {
     bool left_button;
     bool right_button;
@@ -103,7 +102,7 @@ typedef struct Mouse_state
     int y;
     int cell_x;
     int cell_y;
-} Mouse_state;
+} MouseState;
 
 typedef struct Gui
 {
@@ -117,22 +116,22 @@ typedef struct Gui
     SDL_PixelFormat surface_pixel_format;
 } Gui;
 
-typedef enum Menu_item
+typedef enum MenuItem
 {
     MENU_DEBUTANT,
     MENU_INTERMEDIAIRE,
     MENU_EXPERT,
     MENU_HELP
-} Menu_item;
+} MenuItem;
 
-typedef enum Menu_state
+typedef enum MenuState
 {
     MENU_NORMAL,
     MENU_OVER,
     MENU_SELECT
-} Menu_state;
+} MenuState;
 
-typedef enum Cell_sprite
+typedef enum CellSprite
 {
     CELL_0 = 10,
     CELL_1,
@@ -148,18 +147,18 @@ typedef enum Cell_sprite
     CELL_MINE,
     CELL_RED_MINE,
     CELL_NO_MINE
-} Cell_sprite;
+} CellSprite;
 
-typedef enum Emot_sprite
+typedef enum EmotSprite
 {
     EMOT_UP = 0,
     EMOT_DOWN = 27,
     EMOT_HO = 54,
     EMOT_COOL = 81,
     EMOT_DEAD = 108
-} Emot_sprite;
+} EmotSprite;
 
-typedef enum Digit_sprite
+typedef enum DigitSprite
 {
     DIGIT_0,
     DIGIT_1,
@@ -172,23 +171,23 @@ typedef enum Digit_sprite
     DIGIT_8,
     DIGIT_9
 
-} Digit_sprite;
+} DigitSprite;
 
-typedef enum Game_state
+typedef enum GameState
 {
     START,
     FIRST_CLICK,
     RUNNING,
     GAME_OVER,
     GAME_WIN
-} Game_state;
+} GameState;
 
-typedef enum Game_level
+typedef enum GameLevel
 {
     LEVEL_DEBUTANT = 1,
     LEVEL_INTERMEDIAIRE,
     LEVEL_EXPERT
-} Game_level;
+} GameLevel;
 
 typedef struct Map
 {
@@ -208,11 +207,11 @@ typedef struct Game
     SDL_Renderer *renderer;
     SDL_Texture *texture;
     SDL_Surface *icon;
-    Game_state state;
-    Game_level level;
+    GameState state;
+    GameLevel level;
     Map cell_map;
     Gui gui;
-    Mouse_state mouse_state;
+    MouseState mouse_state;
     bool running;
     int window_width;
     int window_height;
@@ -228,5 +227,3 @@ typedef struct Game
 #include "gui.h"
 #include "sprites.h"
 #include "game.h"
-
-#endif

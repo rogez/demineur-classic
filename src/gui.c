@@ -8,6 +8,10 @@
 
 #include "common.h"
 
+static inline void render_gui_texture();
+static inline SDL_Surface *render_menu_item(char *text, MenuState menu_state);
+static inline void draw_menu_item(MenuItem menu_item, MenuState menu_state);
+
 extern Game game;
 
 // GUI
@@ -34,57 +38,39 @@ void gui_init()
     render_gui_texture();
 }
 
-SDL_Surface *render_menu_item(char *text, Menu_state menu_state)
+void gui_close()
 {
-    SDL_Color color_back;
-    SDL_Color color_back_normal = {MENU_BACK_COLOR, 255};
-    SDL_Color color_back_over = {MENU_BACK_COLOR_OVER, 255};
-    SDL_Color color_back_select = {MENU_BACK_COLOR_SELECT, 255};
-
-    SDL_Color color_font;
-    SDL_Color color_font_normal = FONT_MENU_COLOR;
-    SDL_Color color_font_over = FONT_MENU_COLOR_OVER;
-    SDL_Color color_font_select = FONT_MENU_COLOR_SELECT;
-
-    Uint32 surf_color;
-
-    switch (menu_state)
-    {
-    case MENU_NORMAL:
-        color_font = color_font_normal;
-        color_back = color_back_normal;
-        surf_color = MENU_BACK_COLOR_RGB;
-        break;
-
-    case MENU_OVER:
-        color_font = color_font_over;
-        color_back = color_back_over;
-        surf_color = MENU_BACK_COLOR_OVER_RGB;
-        break;
-
-    case MENU_SELECT:
-        color_font = color_font_select;
-        color_back = color_back_select;
-        surf_color = MENU_BACK_COLOR_SELECT_RGB;
-        break;
-    }
-
-    SDL_Surface *surf_txt = TTF_RenderUTF8_Shaded(game.gui.ttf_menu, text, color_font, color_back);
-    SDL_Surface *surf_ret = SDL_CreateRGBSurfaceWithFormat(0, surf_txt->w + FONT_MENU_PADDING * 2, MENU_HEIGHT, 32, SDL_PIXELFORMAT_RGBA32);
-    SDL_FillRect(surf_ret, NULL, surf_color);
-
-    SDL_Rect rd;
-    rd.w = surf_txt->w;
-    rd.h = surf_txt->h;
-    rd.x = (surf_ret->w - rd.w) / 2;
-    rd.y = (surf_ret->h - rd.h) / 2;
-
-    SDL_BlitSurface(surf_txt, NULL, surf_ret, &rd);
-    SDL_FreeSurface(surf_txt);
-    return surf_ret;
+    SDL_DestroyTexture(game.gui.texture);
+    TTF_CloseFont(game.gui.ttf_menu);
+    TTF_Quit();
 }
 
-void render_gui_texture()
+void draw_menu()
+{
+    SDL_Rect r = {0, 0, game.window_width, MENU_HEIGHT};
+    SDL_SetRenderDrawColor(game.renderer, MENU_BACK_COLOR, 255);
+    SDL_RenderFillRect(game.renderer, &r);
+
+    if (game.level == LEVEL_DEBUTANT)
+        draw_menu_item(MENU_DEBUTANT, game.mouse_state.over_menu_debutant ? MENU_OVER : MENU_SELECT);
+    else
+        draw_menu_item(MENU_DEBUTANT, game.mouse_state.over_menu_debutant ? MENU_OVER : MENU_NORMAL);
+
+    if (game.level == LEVEL_INTERMEDIAIRE)
+        draw_menu_item(MENU_INTERMEDIAIRE, game.mouse_state.over_menu_intermediaire ? MENU_OVER : MENU_SELECT);
+    else
+        draw_menu_item(MENU_INTERMEDIAIRE, game.mouse_state.over_menu_intermediaire ? MENU_OVER : MENU_NORMAL);
+
+    if (game.level == LEVEL_EXPERT)
+        draw_menu_item(MENU_EXPERT, game.mouse_state.over_menu_expert ? MENU_OVER : MENU_SELECT);
+    else
+        draw_menu_item(MENU_EXPERT, game.mouse_state.over_menu_expert ? MENU_OVER : MENU_NORMAL);
+
+    draw_menu_item(MENU_HELP, game.mouse_state.over_menu_help ? MENU_OVER : MENU_NORMAL);
+}
+
+//PRIVATE
+static inline void render_gui_texture()
 {
     SDL_Rect rd;
 
@@ -187,14 +173,57 @@ void render_gui_texture()
     SDL_FreeSurface(surf);
 }
 
-void gui_close()
+static inline SDL_Surface *render_menu_item(char *text, MenuState menu_state)
 {
-    SDL_DestroyTexture(game.gui.texture);
-    TTF_CloseFont(game.gui.ttf_menu);
-    TTF_Quit();
+    SDL_Color color_back;
+    SDL_Color color_back_normal = {MENU_BACK_COLOR, 255};
+    SDL_Color color_back_over = {MENU_BACK_COLOR_OVER, 255};
+    SDL_Color color_back_select = {MENU_BACK_COLOR_SELECT, 255};
+
+    SDL_Color color_font;
+    SDL_Color color_font_normal = FONT_MENU_COLOR;
+    SDL_Color color_font_over = FONT_MENU_COLOR_OVER;
+    SDL_Color color_font_select = FONT_MENU_COLOR_SELECT;
+
+    Uint32 surf_color;
+
+    switch (menu_state)
+    {
+    case MENU_NORMAL:
+        color_font = color_font_normal;
+        color_back = color_back_normal;
+        surf_color = MENU_BACK_COLOR_RGB;
+        break;
+
+    case MENU_OVER:
+        color_font = color_font_over;
+        color_back = color_back_over;
+        surf_color = MENU_BACK_COLOR_OVER_RGB;
+        break;
+
+    case MENU_SELECT:
+        color_font = color_font_select;
+        color_back = color_back_select;
+        surf_color = MENU_BACK_COLOR_SELECT_RGB;
+        break;
+    }
+
+    SDL_Surface *surf_txt = TTF_RenderUTF8_Shaded(game.gui.ttf_menu, text, color_font, color_back);
+    SDL_Surface *surf_ret = SDL_CreateRGBSurfaceWithFormat(0, surf_txt->w + FONT_MENU_PADDING * 2, MENU_HEIGHT, 32, SDL_PIXELFORMAT_RGBA32);
+    SDL_FillRect(surf_ret, NULL, surf_color);
+
+    SDL_Rect rd;
+    rd.w = surf_txt->w;
+    rd.h = surf_txt->h;
+    rd.x = (surf_ret->w - rd.w) / 2;
+    rd.y = (surf_ret->h - rd.h) / 2;
+
+    SDL_BlitSurface(surf_txt, NULL, surf_ret, &rd);
+    SDL_FreeSurface(surf_txt);
+    return surf_ret;
 }
 
-void draw_menu_item(Menu_item menu_item, Menu_state menu_state)
+static inline void draw_menu_item(MenuItem menu_item, MenuState menu_state)
 {
     SDL_Rect rs;
     SDL_Rect rd;
@@ -236,28 +265,3 @@ void draw_menu_item(Menu_item menu_item, Menu_state menu_state)
     }
     SDL_RenderCopy(game.renderer, game.gui.texture, &rs, &rd);
 }
-
-void draw_menu()
-{
-    SDL_Rect r = {0, 0, game.window_width, MENU_HEIGHT};
-    SDL_SetRenderDrawColor(game.renderer, MENU_BACK_COLOR, 255);
-    SDL_RenderFillRect(game.renderer, &r);
-
-    if (game.level == LEVEL_DEBUTANT)
-        draw_menu_item(MENU_DEBUTANT, game.mouse_state.over_menu_debutant ? MENU_OVER : MENU_SELECT);
-    else
-        draw_menu_item(MENU_DEBUTANT, game.mouse_state.over_menu_debutant ? MENU_OVER : MENU_NORMAL);
-
-    if (game.level == LEVEL_INTERMEDIAIRE)
-        draw_menu_item(MENU_INTERMEDIAIRE, game.mouse_state.over_menu_intermediaire ? MENU_OVER : MENU_SELECT);
-    else
-        draw_menu_item(MENU_INTERMEDIAIRE, game.mouse_state.over_menu_intermediaire ? MENU_OVER : MENU_NORMAL);
-
-    if (game.level == LEVEL_EXPERT)
-        draw_menu_item(MENU_EXPERT, game.mouse_state.over_menu_expert ? MENU_OVER : MENU_SELECT);
-    else
-        draw_menu_item(MENU_EXPERT, game.mouse_state.over_menu_expert ? MENU_OVER : MENU_NORMAL);
-
-    draw_menu_item(MENU_HELP, game.mouse_state.over_menu_help ? MENU_OVER : MENU_NORMAL);
-}
-

@@ -6,8 +6,7 @@
 // This file is subject to the terms and conditions defined in
 // file "LICENSE", which is part of this source code package.
 
-#ifndef __MAP_H__
-#define __MAP_H__
+#pragma once
 
 #include "common.h"
 
@@ -32,10 +31,7 @@ bool is_cell_hidden(int x, int y);
 void set_all_hidden();
 void unset_all_hidden();
 void update_zero_cell(int x, int y);
-void init_map(Game_level level);
+void init_map(GameLevel level);
 void map_first_click(int first_x, int first_y);
 void print_map();
-void draw_cell(int x, int y);
 void draw_map();
-
-#endif

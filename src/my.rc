@@ -8,12 +8,12 @@ BEGIN
     BLOCK "040904E4"
     BEGIN
       VALUE "CompanyName", "Fredy Rogez"
-      VALUE "FileDescription", "Démineur Classic"
+      VALUE "FileDescription", "Demineur Classic"
       VALUE "FileVersion", "1.0.0"
       VALUE "InternalName", "demineur_classic"
       VALUE "LegalCopyright", "Fredy Rogez"
       VALUE "OriginalFilename", "Demineur.exe"
-      VALUE "ProductName", "Démineur Classic"
+      VALUE "ProductName", "Demineur Classic"
       VALUE "ProductVersion", "1.0.0"
     END
   END

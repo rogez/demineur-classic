@@ -9,12 +9,15 @@
 #include "common.h"
 #include "sprites.h"
 
+static inline void draw_emot_sprite(EmotSprite sprite, SDL_Rect *rd);
+static inline void draw_digit_sprite(DigitSprite sprite, SDL_Rect *rd);
+
 extern Game game;
 
 // DRAWS
 void draw_emot()
 {
-    Emot_sprite emot = EMOT_UP;
+    EmotSprite emot = EMOT_UP;
     SDL_Rect rect = {game.window_width / 2 - 26, EMOT_MARGIN_Y, 52, 52};
     if (game.mouse_state.left_button && game.mouse_state.over_cell)
     {
@@ -66,7 +69,7 @@ void draw_digit(int value, int x, int y)
     }
 }
 
-void draw_cell_sprite(Cell_sprite sprite, SDL_Rect *rd)
+void draw_cell_sprite(CellSprite sprite, SDL_Rect *rd)
 {
     SDL_Rect rs = {0, 68, 16, 16};
 
@@ -138,13 +141,14 @@ void draw_cell_sprite(Cell_sprite sprite, SDL_Rect *rd)
     SDL_RenderCopy(game.renderer, game.texture, &rs, rd);
 }
 
-void draw_emot_sprite(Emot_sprite sprite, SDL_Rect *rd)
+//PRIVATE
+static inline void draw_emot_sprite(EmotSprite sprite, SDL_Rect *rd)
 {
     SDL_Rect rs = {sprite, 24, EMOT_WIDTH, EMOT_HEIGHT};
     SDL_RenderCopy(game.renderer, game.texture, &rs, rd);
 }
 
-void draw_digit_sprite(Digit_sprite sprite, SDL_Rect *rd)
+static inline void draw_digit_sprite(DigitSprite sprite, SDL_Rect *rd)
 {
     SDL_Rect rs = {0, 0, 13, 23};
     rs.x = (sprite - 1) * 14;

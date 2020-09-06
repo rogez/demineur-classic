@@ -6,15 +6,10 @@
 // This file is subject to the terms and conditions defined in
 // file "LICENSE", which is part of this source code package.
 
-#ifndef __SPRITES_H__
-#define __SPRITES_H__
+#pragma once
 
 #include "common.h"
 
 // SPRITES
-void draw_cell_sprite(Cell_sprite sprite, SDL_Rect *rd);
-void draw_emot_sprite(Emot_sprite sprite, SDL_Rect *rd);
-void draw_digit_sprite(Digit_sprite sprite, SDL_Rect *rd);
+void draw_cell_sprite(CellSprite sprite, SDL_Rect *rd);
 void draw_digit(int value, int x, int y);
-
-#endif
